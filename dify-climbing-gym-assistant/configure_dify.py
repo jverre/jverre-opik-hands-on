@@ -3,8 +3,8 @@
 
 The Dify UI is a client of the console API, so this script calls the same API:
 create the admin account, install the OpenAI plugin, store the OpenAI key,
-import the front-desk app from app/basalt-wall-front-desk.yml, and mint a
-service API key that demo.sh uses.
+import the front-desk app from app/basalt-wall-front-desk.yml, turn on Dify's
+built-in Opik tracing for that app, and mint a service API key that demo.sh uses.
 
 Idempotent: every step checks before it creates, so re-running is safe.
 Standard library only — no dependencies to install.
@@ -21,6 +21,10 @@ import urllib.error
 import urllib.request
 
 HERE = pathlib.Path(__file__).resolve().parent
+
+# Opik: Dify ships a native Opik tracing provider, configured per app. Every chat
+# message then becomes one Opik trace, sent by Dify's own worker, with no code in the app.
+OPIK_PROJECT = "dify-climbing-gym-assistant"
 DIFY_URL = os.environ.get("DIFY_URL", "http://localhost:8090").rstrip("/")
 CONSOLE = f"{DIFY_URL}/console/api"
 
@@ -194,6 +198,39 @@ def ensure_app() -> str:
     return app_id
 
 
+def opik_settings() -> dict:
+    """Opik tracing config for Dify, from OPIK_URL_OVERRIDE / OPIK_WORKSPACE / OPIK_API_KEY."""
+    url = os.environ.get("OPIK_URL_OVERRIDE", "http://localhost:5173/api/")
+    # Opik: Dify sends traces from inside its containers, where "localhost" is the container
+    # itself. A local Opik on the host is reached through host.docker.internal instead.
+    url = url.replace("//localhost", "//host.docker.internal").replace("//127.0.0.1", "//host.docker.internal")
+    return {
+        "api_key": os.environ.get("OPIK_API_KEY", ""),  # a local Opik needs none; Opik Cloud does
+        "workspace": os.environ.get("OPIK_WORKSPACE", "default"),
+        "project": OPIK_PROJECT,  # traces land in the Opik project with this name
+        "url": url if url.endswith("/") else url + "/",
+    }
+
+
+def ensure_opik_tracing(app_id: str) -> None:
+    config = opik_settings()
+    status, body = request("GET", f"{CONSOLE}/apps/{app_id}/trace-config?tracing_provider=opik")
+    exists = status == 200 and body.get("tracing_provider") == "opik" and not body.get("has_not_configured")
+    # Opik: Dify checks the config against Opik when it is first saved, so a wrong URL fails here,
+    # not silently at chat time.
+    status, body = request("PATCH" if exists else "POST", f"{CONSOLE}/apps/{app_id}/trace-config",
+                           body={"tracing_provider": "opik", "tracing_config": config})
+    if status not in (200, 201):
+        sys.exit(f"ERROR: saving the Opik trace config failed ({status}): {body}")
+    log(f"Opik trace config saved (url {config['url']}, project '{OPIK_PROJECT}')")
+    # Opik: saving the config is not enough; tracing stays off until it is enabled for the app.
+    status, body = request("POST", f"{CONSOLE}/apps/{app_id}/trace",
+                           body={"enabled": True, "tracing_provider": "opik"})
+    if status != 200:
+        sys.exit(f"ERROR: enabling Opik tracing failed ({status}): {body}")
+    log("Opik tracing enabled for the app")
+
+
 def ensure_service_key(app_id: str) -> str:
     if STATE_PATH.exists():
         state = json.loads(STATE_PATH.read_text())
@@ -218,6 +255,7 @@ def main() -> None:
     ensure_openai_plugin()
     ensure_openai_credential(openai_api_key)
     app_id = ensure_app()
+    ensure_opik_tracing(app_id)
     app_api_key = ensure_service_key(app_id)
 
     STATE_PATH.write_text(json.dumps({

@@ -23,7 +23,7 @@ fi
 echo "Starting Dify..."
 docker compose -f "$DOCKER_DIR/docker-compose.yaml" --project-directory "$DOCKER_DIR" up -d
 
-# 3. Admin account, OpenAI plugin + key, app import, service API key.
+# 3. Admin account, OpenAI plugin + key, app import, Opik tracing, service API key.
 DIFY_URL="http://localhost:$DIFY_PORT" python3 "$HERE/configure_dify.py"
 
 echo
