@@ -1,0 +1,32 @@
+[
+  {
+    "id": "support-ticket-1042",
+    "title": "Support ticket",
+    "text": "Ticket 1042. Marisol Venkataraman wrote in about a cracked kettle lid. She can be reached at marisol.v@example.com or (555) 010-4417. Ship the replacement to 48 Lantern Row, Fenwick Harbor, and please tell Marisol the lid is covered under warranty.",
+    "expected": ["Marisol Venkataraman", "Marisol", "marisol.v@example.com", "(555) 010-4417", "48 Lantern Row, Fenwick Harbor"]
+  },
+  {
+    "id": "hr-note-0317",
+    "title": "HR note",
+    "text": "Performance review for Tobias Abernathy-Quill, born 1988-03-14, SSN 912-45-6789. His manager Ilse Brandvold rates him as exceeding expectations. Payroll confirmed the new salary will be sent to his account next month.",
+    "expected": ["Tobias Abernathy-Quill", "1988-03-14", "912-45-6789", "Ilse Brandvold"]
+  },
+  {
+    "id": "clinic-intake-77",
+    "title": "Clinic intake form",
+    "text": "Patient: Okonkwo Adeyemi-Roth. Date of birth: 22 July 1975. Call back on +1 555-010-9921. Insurance member ID HMX-7730-4482. Reason for visit: seasonal allergies, follow-up in two weeks.",
+    "expected": ["Okonkwo Adeyemi-Roth", "22 July 1975", "+1 555-010-9921", "HMX-7730-4482"]
+  },
+  {
+    "id": "invoice-5521",
+    "title": "Invoice reminder",
+    "text": "Invoice 5521 for Halcyon Tidewater Ltd is overdue. Billing contact Perrin Datchet (perrin@example.com) paid by card 4111 1111 1111 1111 last time; please confirm whether the same card should be charged again.",
+    "expected": ["Perrin Datchet", "perrin@example.com", "4111 1111 1111 1111"]
+  },
+  {
+    "id": "meeting-notes-12",
+    "title": "Meeting notes (no personal data)",
+    "text": "Weekly sync. We agreed to ship the Orchard release on Thursday, move the dashboard refactor to next sprint, and review the on-call rota at the retro. No blockers were raised.",
+    "expected": []
+  }
+]

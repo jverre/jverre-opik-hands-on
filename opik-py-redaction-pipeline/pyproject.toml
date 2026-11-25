@@ -1,0 +1,17 @@
+[project]
+name = "opik-py-redaction-pipeline"
+version = "0.1.0"
+description = "A PII-redaction pipeline traced span by span with the low-level Opik client"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=1.60",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
