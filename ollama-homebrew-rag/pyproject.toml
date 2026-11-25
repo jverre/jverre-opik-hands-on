@@ -1,0 +1,17 @@
+[project]
+name = "ollama-homebrew-rag"
+version = "0.1.0"
+description = "Fully local RAG over a homebrewing handbook with Ollama and LangChain, traced with Opik. No cloud LLM calls."
+requires-python = ">=3.12"
+dependencies = [
+    "langchain-core>=1.0",
+    "langchain-ollama>=1.0",
+    "numpy>=2.0",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
