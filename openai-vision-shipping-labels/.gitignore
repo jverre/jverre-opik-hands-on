@@ -1,0 +1,7 @@
+# Label images are generated output: `uv run main.py` redraws them into data/.
+data/*.png
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+uv.lock

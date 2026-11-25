@@ -1,0 +1,18 @@
+[project]
+name = "openai-vision-shipping-labels"
+version = "0.1.0"
+description = "gpt-4o-mini reads typed fields off generated shipping-label images; each label is attached to its Opik trace and an Opik test suite records where the model misreads"
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=2.54.0",
+    "opik>=2.3.2",
+    "pillow>=13.0.0",
+    "python-dotenv>=1.2.4",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.3"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
