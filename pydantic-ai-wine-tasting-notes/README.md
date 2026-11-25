@@ -56,7 +56,7 @@ pass rate is the point: it is a number you can move by editing the prompt.
 
 ## Run it yourself
 
-1. Install [uv](https://docs.astral.sh/uv/) and start Opik locally, or use Comet cloud.
+1. Install [uv](https://docs.astral.sh/uv/) and start Opik locally, or use Opik Cloud.
 2. `cp .env.example .env` and fill in `OPENAI_API_KEY`. The Opik defaults target a local
    Opik at `http://localhost:5173/api/` (UI at `http://localhost:5173`). For cloud, set
    `OPIK_URL_OVERRIDE`, `OPIK_WORKSPACE` and `OPIK_API_KEY`.

@@ -25,7 +25,7 @@ def setup_tracing() -> None:
         f"Comet-Workspace={os.getenv('OPIK_WORKSPACE', 'default')}",
         f"projectName={PROJECT_NAME}",
     ]
-    if api_key := os.getenv("OPIK_API_KEY"):  # only needed for Comet cloud
+    if api_key := os.getenv("OPIK_API_KEY"):  # only needed for Opik Cloud
         headers.insert(0, f"Authorization={api_key}")
     os.environ.setdefault("OTEL_EXPORTER_OTLP_ENDPOINT", _otlp_endpoint())
     os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = ",".join(headers)
