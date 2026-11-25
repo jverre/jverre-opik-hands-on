@@ -12,6 +12,9 @@ MODEL = "gpt-4o-mini"
 desk = ClaimsDesk.from_files()
 
 
+# Opik: nothing to add here. Each @function_tool call is captured by the tracing
+# processor as a "tool" span whose input is the model's arguments and whose output
+# is the JSON string returned below.
 @function_tool
 def check_coverage(policy_id: str, peril: str) -> str:
     """Look up whether a policy covers a peril. Perils: sudden_water, flood, theft, wind_hail."""

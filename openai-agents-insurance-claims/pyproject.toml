@@ -5,6 +5,7 @@ description = "Home-insurance claims triage with OpenAI Agents SDK handoffs"
 requires-python = ">=3.12"
 dependencies = [
     "openai-agents>=0.22.0",
+    "opik>=2.3.2",
     "python-dotenv>=1.2.3",
 ]
 
