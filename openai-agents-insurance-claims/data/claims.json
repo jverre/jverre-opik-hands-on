@@ -1,0 +1,6 @@
+{
+  "CL-3001": {"policy_id": "HP-4410", "peril": "wind_hail", "status": "settled",
+    "summary": "Fence panel blown down in March storm", "paid_usd": 1350},
+  "CL-3002": {"policy_id": "HP-2288", "peril": "theft", "status": "under_review",
+    "summary": "Stolen garden tools from shed", "paid_usd": 0}
+}

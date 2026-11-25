@@ -1,0 +1,16 @@
+[project]
+name = "openai-agents-insurance-claims"
+version = "0.1.0"
+description = "Home-insurance claims triage with OpenAI Agents SDK handoffs"
+requires-python = ">=3.12"
+dependencies = [
+    "openai-agents>=0.22.0",
+    "python-dotenv>=1.2.3",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

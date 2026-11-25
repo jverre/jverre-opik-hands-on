@@ -1,0 +1,47 @@
+{
+  "HP-4410": {
+    "holder": "Marta Okafor",
+    "address": "14 Larkspur Lane, Dunmere",
+    "dwelling_limit_usd": 410000,
+    "coverages": {
+      "sudden_water": {"covered": true, "limit_usd": 25000, "deductible_usd": 500,
+        "note": "Burst or leaking pipes, appliance overflow, water heater failure."},
+      "flood": {"covered": false, "limit_usd": 0, "deductible_usd": 0,
+        "note": "Excluded: surface water, rising groundwater and sewer backup need a separate rider."},
+      "theft": {"covered": true, "limit_usd": 8000, "deductible_usd": 500,
+        "note": "Forced-entry theft from the dwelling and attached garage."},
+      "wind_hail": {"covered": true, "limit_usd": 40000, "deductible_usd": 1000,
+        "note": "Wind, hail and fallen-tree damage to the dwelling."}
+    }
+  },
+  "HP-7302": {
+    "holder": "Leo Brandvold",
+    "address": "7 Quarry Row, Ashby",
+    "dwelling_limit_usd": 275000,
+    "coverages": {
+      "sudden_water": {"covered": true, "limit_usd": 15000, "deductible_usd": 250,
+        "note": "Burst or leaking pipes, appliance overflow, water heater failure."},
+      "flood": {"covered": false, "limit_usd": 0, "deductible_usd": 0,
+        "note": "Excluded: surface water, rising groundwater and sewer backup need a separate rider."},
+      "theft": {"covered": true, "limit_usd": 5000, "deductible_usd": 250,
+        "note": "Forced-entry theft from the dwelling and attached garage."},
+      "wind_hail": {"covered": true, "limit_usd": 20000, "deductible_usd": 750,
+        "note": "Wind, hail and fallen-tree damage to the dwelling."}
+    }
+  },
+  "HP-2288": {
+    "holder": "Ines Valcourt",
+    "address": "92 Heron Court, Pellam",
+    "dwelling_limit_usd": 330000,
+    "coverages": {
+      "sudden_water": {"covered": true, "limit_usd": 20000, "deductible_usd": 1000,
+        "note": "Burst or leaking pipes, appliance overflow, water heater failure."},
+      "flood": {"covered": false, "limit_usd": 0, "deductible_usd": 0,
+        "note": "Excluded: surface water, rising groundwater and sewer backup need a separate rider."},
+      "theft": {"covered": true, "limit_usd": 6000, "deductible_usd": 500,
+        "note": "Forced-entry theft from the dwelling and attached garage."},
+      "wind_hail": {"covered": true, "limit_usd": 30000, "deductible_usd": 1500,
+        "note": "Wind, hail and fallen-tree damage to the dwelling."}
+    }
+  }
+}
