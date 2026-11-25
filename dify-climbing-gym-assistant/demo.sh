@@ -23,7 +23,10 @@ for i, q in enumerate(QUESTIONS, 1):
     req = urllib.request.Request(
         f"{url}/v1/chat-messages",
         data=json.dumps({"inputs": {}, "query": q, "response_mode": "blocking",
-                         "conversation_id": conversation_id, "user": "demo-climber"}).encode(),
+                         "conversation_id": conversation_id, "user": "demo-climber",
+                         # Dify would otherwise call the model once more to title a new conversation,
+                         # and that call shows up in Opik as an extra generate_conversation_name trace.
+                         "auto_generate_name": False}).encode(),
         headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}"},
     )
     with urllib.request.urlopen(req, timeout=180) as resp:

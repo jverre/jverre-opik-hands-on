@@ -27,19 +27,21 @@ prompt, the reply and the token counts, grouped by conversation.
 
 Open the **`dify-climbing-gym-assistant`** project.
 
-- **Traces tab.** One `./demo.sh` gives **5 traces**: four named **`message`** (one per question) and one named
-  **`generate_conversation_name`**, which is Dify writing a title for the new conversation.
+- **Traces tab.** One `./demo.sh` gives **4 traces**, all named **`message`**, one per question.
 - **Open a `message` trace.** The input is the full message list Dify sent: the system prompt with every gym fact,
   then the conversation so far. The output is the answer. Under it there is one **`llm`** span with the token usage:
-  **455** tokens for the first question, growing to **703** for the fourth, because Dify resends the earlier turns
+  **459** tokens for the first question, growing to **694** for the fourth, because Dify resends the earlier turns
   each time.
 - **Threads tab.** The four messages share one thread, keyed by Dify's conversation id, so you can read the whole
   chat as one transcript.
 - **Metadata.** Each trace and span has `ls_model_name: gpt-4o-mini`, `ls_provider`, `conversation_id`,
   `message_id` and `end_user_id` (`demo-climber`), so a complaint from one member can be traced to the exact message.
 
-In our run, all four answers matched the gym facts: the $59 student membership, a $20 freeze for six weeks
-(two frozen months at $10), the $15 belay check and the $25 lead check, and the Tuesday 9:00-14:00 setting closure.
+In our final run, three answers matched the gym facts: the $59 student membership, the $15 belay check and the
+$25 lead check, and the Tuesday 9:00-14:00 setting closure. The freeze answer did not: the model quoted the rule
+correctly ("$10 per frozen month") but then said a six-week trip needs only **one** frozen month. An earlier run of
+the same app gave the right answer (two months, $20). This is the kind of mistake the trace makes easy to explain:
+the input shows the model had the right facts, so the fix belongs in the instructions, not the data.
 
 ## Run it yourself
 
@@ -85,6 +87,12 @@ account). Stop it with
   metadata (`ls_model_name: gpt-4o-mini`), and the provider is the plugin id `langgenius/openai/openai`, which is
   not in Opik's price table. *Fix:* none in Dify itself. Read the tokens from the span and price them yourself if you
   need dollars.
+
+- **An extra `generate_conversation_name` trace for every new conversation.** *Symptom:* four questions give five
+  traces, and one of them is not a member's question. *Cause:* when a conversation starts, Dify makes a second
+  model call to write a title for it, and its Opik provider traces that call too. *Fix:* send
+  `"auto_generate_name": false` in the `/v1/chat-messages` request, as `demo.sh` does. If you keep auto-titles,
+  filter the traces table on the name `message`.
 
 ## How it's put together
 
