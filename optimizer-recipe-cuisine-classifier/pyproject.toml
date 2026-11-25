@@ -1,10 +1,11 @@
 [project]
 name = "optimizer-recipe-cuisine-classifier"
 version = "0.1.0"
-description = "A loose recipe-cuisine classifier prompt scored on a small labeled dataset"
+description = "A recipe-cuisine classifier traced with Opik"
 requires-python = ">=3.12"
 dependencies = [
     "openai>=1.60",
+    "opik==2.3.3",
     "python-dotenv>=1.0",
 ]
 

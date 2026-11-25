@@ -8,13 +8,20 @@ import functools
 import os
 import pathlib
 
+PROJECT_NAME = "optimizer-recipe-cuisine-classifier"
+# Every trace this example produces lands in this Opik project. Set before the
+# opik import so the SDK reads it when it initializes.
+os.environ["OPIK_PROJECT_NAME"] = PROJECT_NAME
+
 # Some build machines route OpenAI traffic through a local proxy via base-URL
 # env vars; the example should talk to the public API, so drop them.
 os.environ.pop("OPENAI_BASE_URL", None)
 os.environ.pop("OPENAI_API_BASE", None)
 
 import dotenv
+import opik
 from openai import OpenAI
+from opik.integrations.openai import track_openai
 
 # Keys live in the repo-root .env (or a .env next to this file).
 dotenv.load_dotenv(pathlib.Path(__file__).parents[1] / ".env")
@@ -35,7 +42,9 @@ BASELINE_SYSTEM = (
 
 @functools.cache
 def _client() -> OpenAI:
-    return OpenAI()
+    # track_openai wraps the client: every completion becomes an llm span with the
+    # prompt, the answer, token usage and cost, in the PROJECT_NAME project.
+    return track_openai(OpenAI(), project_name=PROJECT_NAME)
 
 
 def normalize(answer: str) -> str:
@@ -61,6 +70,9 @@ def classify(description: str, system: str = BASELINE_SYSTEM) -> str:
     return response.choices[0].message.content or ""
 
 
+# @opik.track opens a general span (and a trace, at the top level) around the
+# loop, so each scoring pass is one trace with its llm calls nested under it.
+@opik.track(name="score_prompt", project_name=PROJECT_NAME)
 def accuracy(items: list[tuple[str, str]], system: str = BASELINE_SYSTEM) -> float:
     """Fraction of items whose answer is exactly the right cuisine label."""
     hits = sum(is_correct(classify(text, system), label) for text, label in items)
@@ -72,3 +84,5 @@ if __name__ == "__main__":
     sample_text, sample_label = TRAIN[0]
     print(f"sample answer for a {sample_label} dish: {classify(sample_text)!r}")
     print(f"baseline accuracy on {len(TRAIN)} training dishes: {accuracy(TRAIN):.3f}")
+    # Traces are sent from a background thread; flush so none are lost at exit.
+    opik.flush_tracker()
