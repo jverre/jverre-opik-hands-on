@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { MODEL, SYSTEM_PROMPT } from "./hotel.js";
+import { TurnTrace } from "./tracing.js";
 import { TOOL_DEFINITIONS, executeTool } from "./tools.js";
 
 /** The slice of the OpenAI client the concierge needs (easy to stub in tests). */
@@ -13,6 +14,8 @@ const MAX_TOOL_ROUNDS = 4;
 /** One instance per guest conversation. Keeps the message history as memory. */
 export class Concierge {
   readonly messages: ChatCompletionMessageParam[] = [{ role: "system", content: SYSTEM_PROMPT }];
+  /** Opik id of the most recent turn's trace, so feedback can be attached to it later. */
+  lastTraceId: string | undefined;
 
   constructor(
     readonly conversationId: string,
@@ -21,9 +24,22 @@ export class Concierge {
 
   async answer(userMessage: string): Promise<string> {
     this.messages.push({ role: "user", content: userMessage });
+    const turn = new TurnTrace(this.conversationId, userMessage, this.client);
+    this.lastTraceId = turn.traceId;
+    try {
+      const reply = await this.runTurn(turn);
+      turn.finish(reply);
+      return reply;
+    } catch (err) {
+      turn.finish(`error: ${err instanceof Error ? err.message : String(err)}`);
+      throw err;
+    }
+  }
 
+  private async runTurn(turn: TurnTrace): Promise<string> {
+    const client = turn.client;
     for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
-      const response = await this.client.chat.completions.create({
+      const response = await client.chat.completions.create({
         model: MODEL,
         messages: this.messages,
         tools: TOOL_DEFINITIONS,
@@ -39,7 +55,9 @@ export class Concierge {
         this.messages.push({
           role: "tool",
           tool_call_id: call.id,
-          content: executeTool(call.function.name, call.function.arguments),
+          content: turn.runTool(call.function.name, call.function.arguments, () =>
+            executeTool(call.function.name, call.function.arguments),
+          ),
         });
       }
     }

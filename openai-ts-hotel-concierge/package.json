@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "description": "In-stay guest-services concierge for a fictional hotel, built on the OpenAI TypeScript SDK.",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "demo": "tsx src/demo.ts",
     "dev": "tsx src/demo.ts --interactive",
@@ -12,12 +14,19 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "openai": "6.49.0"
+    "openai": "6.49.0",
+    "opik": "2.3.2",
+    "opik-openai": "2.3.2"
   },
   "devDependencies": {
     "@types/node": "^22.20.6",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vitest": "^3.2.7"
+  },
+  "overrides": {
+    "opik-openai": {
+      "opik": "$opik"
+    }
   }
 }

@@ -2,6 +2,7 @@ import { createInterface } from "node:readline/promises";
 import OpenAI from "openai";
 import { Concierge } from "./concierge.js";
 import { loadNearestEnv } from "./env.js";
+import { PROJECT_NAME, flushTraces } from "./tracing.js";
 
 loadNearestEnv();
 
@@ -48,8 +49,14 @@ async function runInteractive(client: OpenAI): Promise<void> {
 
 async function main(): Promise<void> {
   const client = new OpenAI();
-  if (process.argv.includes("--interactive")) await runInteractive(client);
-  else await runDemo(client);
+  try {
+    if (process.argv.includes("--interactive")) await runInteractive(client);
+    else await runDemo(client);
+  } finally {
+    // Flush before exit (even on errors) so the last turns reach Opik.
+    await flushTraces();
+  }
+  console.log(`\nTraces sent to the "${PROJECT_NAME}" project in Opik.`);
 }
 
 main().catch((err) => {
