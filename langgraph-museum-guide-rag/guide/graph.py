@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from opik.integrations.langchain import OpikTracer, track_langgraph
 from langchain_core.language_models import BaseChatModel
 from langchain_core.vectorstores import InMemoryVectorStore
 from langgraph.graph import END, START, StateGraph
@@ -28,7 +29,8 @@ def format_context(chunks: list[str]) -> str:
     return "\n\n---\n\n".join(chunks)
 
 
-def build_graph(store: InMemoryVectorStore, llm: BaseChatModel, k: int = DEFAULT_K) -> Any:
+def build_graph(store: InMemoryVectorStore, llm: BaseChatModel, k: int = DEFAULT_K,
+                tracer: OpikTracer | None = None) -> Any:
     """Compile the graph. The store, model and k are fixed per compiled graph."""
 
     def retrieve(state: State) -> dict:
@@ -45,4 +47,10 @@ def build_graph(store: InMemoryVectorStore, llm: BaseChatModel, k: int = DEFAULT
     graph.add_edge(START, "retrieve")
     graph.add_edge("retrieve", "generate")
     graph.add_edge("generate", END)
-    return graph.compile()
+    app = graph.compile()
+    if tracer is None:
+        return app
+    # track_langgraph attaches the tracer to the compiled graph once: every
+    # app.invoke() becomes one trace, with a span per node and the chat model
+    # call nested as an llm span. No callbacks to pass at the call sites.
+    return track_langgraph(app, tracer)
