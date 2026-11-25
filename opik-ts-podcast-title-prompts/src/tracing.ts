@@ -3,6 +3,8 @@ import { trackOpenAI } from "opik-openai";
 import { writeEpisodeCopy, type ChatClient, type EpisodeCopy } from "./copywriter.js";
 import type { Episode } from "./episodes.js";
 import { loadNearestEnv } from "./env.js";
+import type { PromptLoader } from "./library.js";
+import { MODEL } from "./prompts.js";
 
 export const PROJECT_NAME = "opik-ts-podcast-title-prompts";
 
@@ -31,25 +33,30 @@ export async function flushTraces(): Promise<void> {
 
 /**
  * Returns a copywriter that records every call as one trace named
- * "write-episode-copy". `metadata` is stamped on the trace so you can filter
- * the traces table by which prompt produced them.
+ * "write-episode-copy". The prompt is loaded inside the traced function, and
+ * the version and commit that actually ran are stamped on the trace metadata,
+ * so any reply can be traced back to the wording that produced it.
  */
 export function tracedCopywriter(
   rawClient: ChatClient,
-  systemPrompt: string,
-  metadata: Record<string, unknown>,
+  loadPrompt: PromptLoader,
 ): (episode: Episode) => Promise<EpisodeCopy> {
   const opik = getOpik();
   // track() opens a trace (root span) around the function: input is the episode,
   // output is the parsed copy, and anything traced inside becomes a child span.
+  // Inside a test-suite run it becomes a span under that run's evaluation_task trace.
   return track({ name: "write-episode-copy", projectName: PROJECT_NAME }, async (episode: Episode) => {
+    const prompt = await loadPrompt();
     const context = getTrackContext();
-    context?.trace.update({ metadata });
+    // Metadata on the trace is what you filter by in the traces table to compare versions.
+    context?.trace.update({
+      metadata: { prompt_name: prompt.name, prompt_version: prompt.version, prompt_commit: prompt.commit, model: MODEL },
+    });
     // trackOpenAI wraps the client: each completion becomes a child span with the
     // model, token usage and (for known models) cost. Unlike track(), it does not
     // look up the active context, so parent is what nests it under this trace
     // instead of creating a second, separate trace per call.
     const client = trackOpenAI(rawClient, { client: opik, parent: context?.span, generationName: "episode-copy" });
-    return writeEpisodeCopy(client, systemPrompt, episode);
+    return writeEpisodeCopy(client, prompt.prompt, episode);
   }) as (episode: Episode) => Promise<EpisodeCopy>;
 }

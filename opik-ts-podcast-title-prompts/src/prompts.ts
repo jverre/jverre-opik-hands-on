@@ -14,8 +14,8 @@ Blurb: <the blurb>`;
 export const PROMPT_V2 = `You write titles and blurbs for episodes of podcasts on the Marrow & Moss Audio network.
 Given the notes for an episode, follow these house rules exactly:
 
-- The title is 8 words or fewer.
-- The title contains no colon, question mark or exclamation mark.
+- The title is 6 words or fewer.
+- The title has no punctuation except apostrophes: no colon, question mark or exclamation mark.
 - The blurb is exactly one sentence and names the guest.
 - Never use clickbait words: journey, unlock, unveil, dive, secrets, ultimate, "you won't believe".
 
