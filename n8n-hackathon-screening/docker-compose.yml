@@ -1,0 +1,28 @@
+services:
+  n8n:
+    build: .
+    container_name: n8n-hackathon-screening
+    ports:
+      - "5678:5678"
+    environment:
+      # --- Opik (OpenTelemetry export) ---
+      # setup.sh derives both values from OPIK_URL_OVERRIDE / OPIK_WORKSPACE in the
+      # repo-root .env. The projectName header decides which Opik project the
+      # traces land in; drop it and they go to "Default Project".
+      OTEL_EXPORTER_OTLP_ENDPOINT: "${OPIK_OTLP_ENDPOINT:-http://host.docker.internal:5173/api/v1/private/otel}"
+      OTEL_EXPORTER_OTLP_HEADERS: "${OPIK_OTLP_HEADERS:-Comet-Workspace=default,projectName=n8n-hackathon-screening}"
+      N8N_OTEL_SERVICE_NAME: "n8n-hackathon-screening"
+
+      # --- plain n8n settings for a localhost demo ---
+      N8N_SECURE_COOKIE: "false"
+      N8N_RUNNERS_ENABLED: "true"
+      N8N_DIAGNOSTICS_ENABLED: "false"
+    extra_hosts:
+      # lets the container reach an Opik running on the host (Linux needs this line;
+      # Docker Desktop resolves host.docker.internal on its own)
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:

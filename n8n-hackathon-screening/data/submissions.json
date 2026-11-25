@@ -1,0 +1,20 @@
+[
+  {
+    "team": "Low Tide Labs",
+    "project": "TidePing",
+    "pitch": "A text-message bot that warns harbour-side shop owners two hours before an unusually high tide, using the public tide tables cached on a Raspberry Pi so it still works when the town's internet drops.",
+    "prior_work": "Nothing yet; we have the tide-table parser sketched on paper."
+  },
+  {
+    "team": "Gull Patrol",
+    "project": "Beach Litter Heatmap",
+    "pitch": "Volunteers snap photos of litter on morning walks; we plot them on a map so the council can see where bins are missing. We'd like to try it, but we are not sure the photo upload will work by Sunday.",
+    "prior_work": "A map page from a previous hackathon."
+  },
+  {
+    "team": "Northwind Systems",
+    "project": "FleetOps Pro",
+    "pitch": "We will demo our company's existing logistics dashboard, already sold to 40 customers, and add a new dark-mode theme over the weekend.",
+    "prior_work": "The full commercial product."
+  }
+]

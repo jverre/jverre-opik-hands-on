@@ -1,0 +1,169 @@
+{
+  "name": "Hackathon screening",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "nodes": [
+    {
+      "id": "5d1a7c20-1f0e-4a61-9b0d-a1b2c3d4e501",
+      "name": "Submission webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "3e9b6f42-8c1d-4b7a-a2e5-a1b2c3d4e502",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "hackathon-screening",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "5d1a7c20-1f0e-4a61-9b0d-a1b2c3d4e503",
+      "name": "Screen submission (gpt-4o-mini)",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "id"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You screen project submissions for a weekend community hackathon called Driftwood Hack. Judge only what the submission text says. Score three criteria from 1 to 5: originality, feasibility (can it be demoed by Sunday evening), and theme_fit (the theme is 'tools for coastal towns'). Then decide: shortlist (strong on all three, average >= 4), maybe (promising but a clear gap), or decline (off-theme, not a real project, or rule-breaking such as a pre-built commercial product). Reply with a JSON object with exactly these keys: decision, originality, feasibility, theme_fit, reason (one sentence), feedback (one short, kind sentence for the team)."
+            },
+            {
+              "role": "user",
+              "content": "=Team: {{ $json.body.team }}\nProject: {{ $json.body.project }}\nPitch: {{ $json.body.pitch }}\nWhat already exists: {{ $json.body.prior_work }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {
+          "temperature": 0
+        }
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "__OPENAI_CREDENTIAL_ID__",
+          "name": "OpenAI (hackathon screening)"
+        }
+      }
+    },
+    {
+      "id": "5d1a7c20-1f0e-4a61-9b0d-a1b2c3d4e504",
+      "name": "Shape the verdict",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "team",
+              "type": "string",
+              "value": "={{ $('Submission webhook').item.json.body.team }}"
+            },
+            {
+              "id": "a2",
+              "name": "project",
+              "type": "string",
+              "value": "={{ $('Submission webhook').item.json.body.project }}"
+            },
+            {
+              "id": "a3",
+              "name": "decision",
+              "type": "string",
+              "value": "={{ $json.message.content.decision }}"
+            },
+            {
+              "id": "a4",
+              "name": "scores",
+              "type": "string",
+              "value": "=originality {{ $json.message.content.originality }} / feasibility {{ $json.message.content.feasibility }} / theme_fit {{ $json.message.content.theme_fit }}"
+            },
+            {
+              "id": "a5",
+              "name": "reason",
+              "type": "string",
+              "value": "={{ $json.message.content.reason }}"
+            },
+            {
+              "id": "a6",
+              "name": "feedback",
+              "type": "string",
+              "value": "={{ $json.message.content.feedback }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "5d1a7c20-1f0e-4a61-9b0d-a1b2c3d4e505",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "respondWith": "firstIncomingItem",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Submission webhook": {
+      "main": [
+        [
+          {
+            "node": "Screen submission (gpt-4o-mini)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Screen submission (gpt-4o-mini)": {
+      "main": [
+        [
+          {
+            "node": "Shape the verdict",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shape the verdict": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
