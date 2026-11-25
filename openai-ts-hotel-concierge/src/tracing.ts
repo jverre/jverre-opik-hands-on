@@ -48,7 +48,7 @@ export class TurnTrace {
   }
 
   /**
-   * trackOpenAI wraps the client: each completion becomes an llm span under this
+   * trackOpenAI wraps the client: each completion becomes a model-call span (type general in opik-openai 2.3.2) under this
    * trace, with token usage and (for known models) estimated cost. parent is
    * what keeps the spans inside the turn instead of creating separate traces.
    */
