@@ -1,0 +1,10 @@
+[
+  {"claim": "Heliodor's primary mirror is 1.8 meters across.", "label": "SUPPORTED", "cites": "F01"},
+  {"claim": "Heliodor saw first light in 2015.", "label": "REFUTED", "cites": "F02"},
+  {"claim": "Tessaly-b has two moons.", "label": "NOT ENOUGH INFO", "cites": "none"},
+  {"claim": "The dome is built on Mount Quillane.", "label": "SUPPORTED", "cites": "F03"},
+  {"claim": "VESPA-2 can record infrared light out to 2,500 nanometers.", "label": "REFUTED", "cites": "F04"},
+  {"claim": "Comet Brannigan-Oye is visible to the naked eye.", "label": "NOT ENOUGH INFO", "cites": "none"},
+  {"claim": "The survey camera takes a frame every 90 seconds.", "label": "SUPPORTED", "cites": "F05"},
+  {"claim": "The staff includes 15 engineers.", "label": "REFUTED", "cites": "F10"}
+]

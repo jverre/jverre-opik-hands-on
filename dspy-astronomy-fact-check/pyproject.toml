@@ -1,0 +1,15 @@
+[project]
+name = "dspy-astronomy-fact-check"
+version = "0.1.0"
+description = "A DSPy claim checker that compiles its own few-shot prompt, scored on an Opik test suite"
+requires-python = ">=3.12"
+dependencies = [
+    "dspy>=3.0",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

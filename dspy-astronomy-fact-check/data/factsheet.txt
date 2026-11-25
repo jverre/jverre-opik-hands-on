@@ -1,0 +1,12 @@
+Mirador Ridge Observatory - fact sheet (fictional)
+
+F01 The main telescope, Heliodor, has a 1.8-meter primary mirror.
+F02 Heliodor saw first light on 14 March 2011.
+F03 The dome stands at 3,200 meters on Mount Quillane.
+F04 The VESPA-2 spectrograph covers wavelengths from 380 to 900 nanometers.
+F05 The survey camera takes a 4,096 by 4,096 pixel frame every 90 seconds.
+F06 Comet Brannigan-Oye was discovered here in 2016 and returns every 61 years.
+F07 The exoplanet Tessaly-b circles its star once every 7.4 days.
+F08 The primary mirror is re-coated with aluminum every 4 years.
+F09 The observatory closes for the monsoon in July and August.
+F10 The staff is 23 astronomers and 9 engineers.
