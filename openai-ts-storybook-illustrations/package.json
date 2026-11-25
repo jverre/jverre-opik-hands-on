@@ -4,17 +4,26 @@
   "private": true,
   "type": "module",
   "description": "Picture-book page illustrator for a fictional story, built on the OpenAI TypeScript SDK.",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "demo": "tsx src/cli.ts run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "openai": "6.49.0"
+    "openai": "6.49.0",
+    "opik": "2.3.2",
+    "opik-openai": "2.3.2"
   },
   "devDependencies": {
     "@types/node": "^22.20.6",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "opik-openai": {
+      "opik": "$opik"
+    }
   }
 }

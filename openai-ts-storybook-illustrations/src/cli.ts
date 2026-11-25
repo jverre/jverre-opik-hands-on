@@ -7,23 +7,30 @@
 import process from "node:process";
 import { parseArgs } from "node:util";
 import OpenAI from "openai";
+import { Opik } from "opik";
 import { BRIEF_TEMPLATES, renderBrief } from "./briefs.js";
 import { loadEnv } from "./env.js";
 import { illustratePage, pageVars } from "./illustrate.js";
 import { PAGES, STORY_TITLE } from "./story.js";
 
 const OUT_DIR = "output";
+// Every trace lands in this Opik project (created on first write).
+export const PROJECT = "openai-ts-storybook-illustrations";
 
 async function run(versions: string[], pageCount: number): Promise<void> {
   if (!process.env.OPENAI_API_KEY) {
     throw new Error("OPENAI_API_KEY is not set. Add it to .env and re-run.");
   }
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  // The Opik client batches traces in the background; the host and workspace
+  // come from OPIK_URL_OVERRIDE / OPIK_WORKSPACE.
+  const opik = new Opik({ projectName: PROJECT });
   console.log(`Illustrating "${STORY_TITLE}"`);
   for (const version of versions) {
     for (const page of PAGES.slice(0, pageCount)) {
       const done = await illustratePage({
         openai,
+        opik,
         page,
         version,
         template: BRIEF_TEMPLATES[version],
@@ -32,6 +39,10 @@ async function run(versions: string[], pageCount: number): Promise<void> {
       console.log(`  ${version} ${page.id} -> ${done.file}`);
     }
   }
+  // Without flush the process can exit before the queued traces and image
+  // attachments are sent, leaving the project empty.
+  await opik.flush();
+  console.log(`Done. Open the "${PROJECT}" project in Opik.`);
 }
 
 function show(versions: string[], pageCount: number): void {
