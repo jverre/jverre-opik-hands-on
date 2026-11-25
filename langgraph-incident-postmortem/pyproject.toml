@@ -1,0 +1,17 @@
+[project]
+name = "langgraph-incident-postmortem"
+version = "0.1.0"
+description = "A planner, investigators and writer in LangGraph drafting a blameless post-mortem, traced as one deep Opik trace"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain>=1.5.2",
+    "langchain-openai>=1.8.5",
+    "langgraph>=1.2.24",
+    "opik>=2.3.2",
+    "python-dotenv>=1.2.4",
+]
+
+[dependency-groups]
+dev = ["pytest"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
