@@ -46,7 +46,7 @@ def main() -> None:
     # 2. Two experiments over the same dataset: the default k=4 and a starved k=1.
     # Opik lists them side by side so the per-question score changes are visible.
     for k, name in [(4, "k4-baseline"), (1, "k1-starved")]:
-        evaluation = run_experiment(build_graph(store, llm, k=k, tracer=tracer), name, k)
+        evaluation = run_experiment(build_graph(store, llm, k=k, tracer=tracer), name, k, PROJECT_NAME)
         scores = ", ".join(f"{n}={v:.2f}" for n, v in summarize(evaluation).items())
         print(f"{name}: {scores}\n  {evaluation.experiment_url}")
 

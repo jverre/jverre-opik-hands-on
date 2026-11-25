@@ -12,9 +12,10 @@ def build_store(chunks: list[str], embeddings: Embeddings | None = None) -> InMe
     return InMemoryVectorStore.from_texts(chunks, embeddings)
 
 
-# A named tool span for retrieval: output is the k chunks, and it nests under the
-# graph's "retrieve" node.
-@opik.track(name="vector_search", type="tool")
+# A named tool span for retrieval: input is the question and k, output is the k chunks,
+# and it nests under the graph's "retrieve" node. ignore_arguments keeps the store's
+# object repr out of the span input.
+@opik.track(name="vector_search", type="tool", ignore_arguments=["store"])
 def search(store: InMemoryVectorStore, question: str, k: int) -> list[str]:
     """Return the text of the k chunks most similar to the question."""
     return [doc.page_content for doc in store.similarity_search(question, k=k)]

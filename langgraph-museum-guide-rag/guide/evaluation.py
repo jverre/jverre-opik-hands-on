@@ -52,13 +52,19 @@ def make_task(app: Any):
     return task
 
 
-def run_experiment(app: Any, experiment_name: str, k: int):
+def run_experiment(app: Any, experiment_name: str, k: int, project_name: str):
     """Score the graph on the dataset and return the Opik evaluation result."""
     # get_or_create + insert: the dataset appears once in Opik and re-runs add no duplicates.
-    dataset = opik.Opik().get_or_create_dataset(name=DATASET_NAME)
+    # project_name files the dataset under the project; without it the SDK finds it by a
+    # workspace-wide search and logs a deprecation warning on every run.
+    dataset = opik.Opik(project_name=project_name).get_or_create_dataset(
+        name=DATASET_NAME, project_name=project_name
+    )
     dataset.insert(DATASET_ITEMS)
 
-    # evaluate() runs the task per item and logs an experiment linked to the dataset.
+    # evaluate() runs the task per item and logs an experiment linked to the dataset; the
+    # experiment and its per-item traces follow the dataset's project (evaluate's own
+    # project_name argument is deprecated).
     # Hallucination: is the answer supported by the retrieved context (0 grounded,
     # 1 hallucinated)? ContextPrecision: was the retrieved context the right context
     # for the question and reference answer (1 precise)? Both are LLM judges.

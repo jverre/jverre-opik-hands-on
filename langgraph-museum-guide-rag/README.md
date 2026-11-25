@@ -118,6 +118,17 @@ plain Python.
 
 ## Gotchas we hit
 
+**The `vector_search` span input contains `'store': '<langchain_core.vectorstores.in_memory.InMemoryVectorStore object at 0x...>'`.**
+`@opik.track` logs every argument, and the vector store is passed in as one.
+Exclude it: `@opik.track(name="vector_search", type="tool", ignore_arguments=["store"])`.
+The span input is then just `question` and `k`.
+
+**Run logs `Dataset 'museum-guide-questions' was found via workspace-wide search` and `The project_name parameter of evaluate() is deprecated`.**
+With the 2.3 SDK, the dataset should belong to a project, and `evaluate()` takes
+its project from the dataset. Create it with
+`client.get_or_create_dataset(name=..., project_name=PROJECT_NAME)` and do not
+pass `project_name` to `evaluate()`.
+
 **A script that only reads from Opik prints `No project name configured. Traces are being logged to "Default Project"`.**
 `OPIK_PROJECT_NAME` is read when the client is created, and `main.py` sets it
 before importing anything from Opik. A separate verification script needs the
