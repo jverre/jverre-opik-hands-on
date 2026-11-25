@@ -1,0 +1,23 @@
+[
+  {
+    "id": "ER-2041",
+    "employee": "Dana Okafor",
+    "category": "meals",
+    "amount_usd": 342.00,
+    "description": "Dinner with three prospects from Larkspur Outdoor after the product walkthrough, Cedar & Salt Bistro."
+  },
+  {
+    "id": "ER-2042",
+    "employee": "Lee Brandt",
+    "category": "ground_transport",
+    "amount_usd": 18.50,
+    "description": "Taxi from the Tacoma depot to the ferry terminal."
+  },
+  {
+    "id": "ER-2043",
+    "employee": "Priya Nair",
+    "category": "airfare",
+    "amount_usd": 1240.00,
+    "description": "Round trip Seattle to Chicago for the spring trade show, booked two weeks out."
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "meals": {
+    "limit": "USD 60 per person per meal",
+    "receipt_required_over_usd": 25,
+    "notes": "Alcohol is never reimbursable. Client meals need the guest list on the report."
+  },
+  "lodging": {
+    "limit": "USD 220 per night",
+    "receipt_required_over_usd": 0,
+    "notes": "Itemised hotel folio required. Anything above the nightly cap goes to the manager."
+  },
+  "airfare": {
+    "limit": "USD 800 per round trip without pre-approval",
+    "receipt_required_over_usd": 0,
+    "notes": "Economy only. Fares above the limit need written pre-approval from the department head."
+  },
+  "ground_transport": {
+    "limit": "USD 75 per trip",
+    "receipt_required_over_usd": 25,
+    "notes": "Taxi, rideshare, train. Rental cars need pre-approval."
+  },
+  "software": {
+    "limit": "USD 0 on expense reports",
+    "receipt_required_over_usd": 0,
+    "notes": "Software subscriptions go through procurement, never through expenses. Reject and point to procurement."
+  }
+}

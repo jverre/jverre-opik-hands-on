@@ -1,0 +1,5 @@
+{
+  "ER-2041": {"on_file": true, "vendor": "Cedar & Salt Bistro", "total_usd": 342.00, "line_items": ["4 entrees 228.00", "wine 64.00", "tax and tip 50.00"], "note": "Itemised. Guest list not attached."},
+  "ER-2042": {"on_file": false, "vendor": null, "total_usd": null, "line_items": [], "note": "No receipt uploaded."},
+  "ER-2043": {"on_file": false, "vendor": null, "total_usd": null, "line_items": [], "note": "No receipt uploaded; only a booking confirmation email was forwarded."}
+}

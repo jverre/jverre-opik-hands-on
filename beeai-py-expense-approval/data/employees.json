@@ -1,0 +1,5 @@
+{
+  "Dana Okafor": {"title": "Account Executive", "manager": "Marcus Lindqvist", "manager_email": "marcus.lindqvist@harborpine.example", "approval_limit_usd": 1500},
+  "Lee Brandt": {"title": "Warehouse Planner", "manager": "Ines Moreau", "manager_email": "ines.moreau@harborpine.example", "approval_limit_usd": 500},
+  "Priya Nair": {"title": "Merchandising Analyst", "manager": "Tobias Wren", "manager_email": "tobias.wren@harborpine.example", "approval_limit_usd": 1000}
+}
