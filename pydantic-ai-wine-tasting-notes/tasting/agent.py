@@ -3,9 +3,10 @@
 from functools import cache
 from typing import Any
 
+import opik
 from pydantic_ai import Agent
 
-from tasting.config import MODEL
+from tasting.config import MODEL, PROJECT_NAME
 from tasting.schema import TastingNote
 
 SYSTEM_PROMPT = (
@@ -23,6 +24,9 @@ def get_agent() -> Agent[None, TastingNote]:
     return Agent(MODEL, output_type=TastingNote, system_prompt=SYSTEM_PROMPT)
 
 
+# @opik.track opens the root span of each trace, holding the note as input and
+# the record as output; the Pydantic AI spans nest underneath it.
+@opik.track(project_name=PROJECT_NAME, name="extract_note")
 def extract_note(text: str) -> dict[str, Any]:
     """One extraction: messy note in, typed record (as a dict) out."""
     return get_agent().run_sync(text).output.model_dump()

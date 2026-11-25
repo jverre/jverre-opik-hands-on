@@ -5,6 +5,8 @@ description = "Pydantic AI agent that turns messy sommelier notes into typed tas
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "logfire>=6.0.1",
+    "opik>=2.3.2",
     "pydantic-ai-slim[openai]>=1.0",
     "python-dotenv>=1.0",
 ]

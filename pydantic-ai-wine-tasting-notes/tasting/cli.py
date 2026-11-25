@@ -5,6 +5,7 @@ import json
 import sys
 
 from tasting.config import load_env
+from tasting.telemetry import flush_tracing, setup_tracing
 
 
 def _extract(args: argparse.Namespace) -> None:
@@ -42,7 +43,11 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     load_env()
     args = build_parser().parse_args()
-    args.func(args)
+    setup_tracing()
+    try:
+        args.func(args)
+    finally:
+        flush_tracing()
 
 
 if __name__ == "__main__":
