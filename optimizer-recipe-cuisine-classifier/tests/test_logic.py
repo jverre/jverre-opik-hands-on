@@ -24,7 +24,7 @@ def test_dataset_split_is_balanced_and_labeled():
 
 
 def test_metric_scores_exact_label_only():
-    item = {"description": "x", "label": "oaxacan"}
+    item = {"dish": "x", "label": "oaxacan"}
     assert main.cuisine_exact_match(item, "Oaxacan") == 1.0
     assert main.cuisine_exact_match(item, "Mexican") == 0.0
 
@@ -39,8 +39,8 @@ def test_trial_scores_flattens_rounds():
 
 
 def test_to_mustache_rewrites_only_the_variable():
-    out = main.to_mustache([{"role": "user", "content": "{description}"}])
-    assert out == [{"role": "user", "content": "{{description}}"}]
+    out = main.to_mustache([{"role": "user", "content": "{dish}"}])
+    assert out == [{"role": "user", "content": "{{dish}}"}]
 
 
 def test_traced_function_runs_with_tracking_disabled(monkeypatch):

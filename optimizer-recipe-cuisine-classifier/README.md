@@ -32,7 +32,7 @@ Open the Opik UI (http://localhost:5173 for a local install) and look in four pl
 
 **Prompts.** `cuisine-classifier` has two versions. v1 is the baseline text, tagged `stage: baseline` in its metadata. v2 is the optimizer's winner, with `train_accuracy` and `held_out_accuracy` in its metadata. Your app can load v2 by name and roll back to v1 without a deploy.
 
-**Datasets.** `recipe-cuisines-train` has 20 items with two columns, `description` and `label`.
+**Datasets.** `recipe-cuisines-train` has 20 items with two columns, `dish` and `label`.
 
 ## Run it yourself
 
@@ -51,6 +51,8 @@ Open the Opik UI (http://localhost:5173 for a local install) and look in four pl
 - Rewrite the first line of the `cuisine_exact_match` docstring to something vague like "Scores the reply." and re-run: the optimizer reads that line, so the quality of the rewrites changes.
 
 ## Gotchas we hit
+
+**Every trial scores 0.0 and the model replies "Please provide the description of the dish."** The dataset items were inserted as `{"description": ..., "label": ...}`, and Opik's `dataset.insert` silently drops a key named `description`. Reading the items back returns every key except `description`, so the template `{description}` was filled with nothing. Rename the column to anything else (this example uses `dish`) and use `{dish}` in the prompt.
 
 **The run stops after one round with only a couple of trials, even though `max_trials=6`.** The optimizer's default `skip_perfect_score=True` ends the run at the first score of 0.95 or higher. If you want the full trial curve, construct it with `MetaPromptOptimizer(..., skip_perfect_score=False)`.
 

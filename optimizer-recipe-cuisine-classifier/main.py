@@ -33,9 +33,9 @@ def trial_scores(history: list[dict]) -> list[float]:
 
 
 def to_mustache(messages: list[dict]) -> list[dict]:
-    """The optimizer fills {description}; the prompt library uses {{description}}."""
+    """The optimizer fills {dish}; the prompt library uses {{dish}}."""
     return [
-        {**m, "content": m["content"].replace("{description}", "{{description}}")}
+        {**m, "content": m["content"].replace("{dish}", "{{dish}}")}
         for m in messages
     ]
 
@@ -59,17 +59,17 @@ def main() -> None:
 
     # The dataset is the ground truth the optimizer climbs against. It is stored
     # in Opik (Datasets tab), and every trial below is an experiment on it. The
-    # item keys are the prompt's template variables.
+    # item keys must not be called "description": the SDK drops that key on insert.
     dataset = opik_client.get_or_create_dataset(
         name=DATASET_NAME,
         description="20 invented recipe blurbs labeled with one of five cuisines",
     )
-    dataset.insert([{"description": t, "label": label} for t, label in TRAIN])
+    dataset.insert([{"dish": t, "label": label} for t, label in TRAIN])
 
     prompt = ChatPrompt(
         name=LIBRARY_PROMPT_NAME,
         system=BASELINE_SYSTEM,
-        user="{description}",  # filled from the dataset's "description" column
+        user="{dish}",  # filled from the dataset's "dish" column
         model=LITELLM_MODEL,
     )
 
