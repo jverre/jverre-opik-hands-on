@@ -30,7 +30,8 @@ async def check_eligibility(app_id: str) -> dict:
 @activity.defn
 async def check_budget(app_id: str) -> dict:
     # Stand-in for a call to a flaky finance service: the first attempt of every
-    # workflow fails, Temporal retries, the second attempt succeeds.
+    # workflow fails, Temporal retries, the second attempt succeeds. In Opik the failed
+    # attempt is its own RunActivity:check_budget span with this message as its error.
     if activity.info().attempt == 1:
         raise RuntimeError("Finance ledger service unavailable (503)")
     return run_budget_check(get_application(app_id))

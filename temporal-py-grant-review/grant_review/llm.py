@@ -11,6 +11,7 @@ from .tracing import llm_span, record_completion
 async def chat_json(name: str, system: str, user: str) -> tuple[dict, object]:
     """One JSON-mode completion; returns (parsed JSON, raw response)."""
     client = AsyncOpenAI()
+    # llm_span adds an `llm` span (model, tokens, cost) under the current RunActivity span.
     with llm_span(name, system, user) as span:
         response = await client.chat.completions.create(
             model=MODEL,
@@ -25,6 +26,7 @@ async def chat_json(name: str, system: str, user: str) -> tuple[dict, object]:
 
 async def chat_text(name: str, system: str, user: str) -> tuple[str, object]:
     client = AsyncOpenAI()
+    # llm_span adds an `llm` span (model, tokens, cost) under the current RunActivity span.
     with llm_span(name, system, user) as span:
         response = await client.chat.completions.create(
             model=MODEL,

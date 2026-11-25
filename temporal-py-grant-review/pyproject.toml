@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "openai>=1.50",
+    "opik>=2.3.2",
     "python-dotenv>=1.0",
     "opentelemetry-exporter-otlp-proto-http>=1.27",
     "opentelemetry-sdk>=1.27",
@@ -14,6 +15,7 @@ dependencies = [
 
 [project.scripts]
 grant-demo = "grant_review.demo:main"
+grant-check = "grant_review.check_trace:main"
 
 [dependency-groups]
 dev = ["pytest>=8"]
