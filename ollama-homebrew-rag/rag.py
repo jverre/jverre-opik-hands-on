@@ -1,11 +1,15 @@
 """The homebrew handbook RAG pipeline: local embeddings, local LLM, in-memory index."""
 
+import operator
 import os
 import pathlib
 
+import opik
+from opik import opik_context
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableLambda
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 
@@ -51,16 +55,45 @@ def build_retriever():
     return store.as_retriever(search_kwargs={"k": TOP_K})
 
 
+def make_search(retriever):
+    """Wrap the retriever in a function that Opik records as its own span.
+
+    OpikTracer drops the retriever run when the retriever sits directly in the
+    chain, so the trace shows nothing between the question and the prompt.
+    A named @track function does not get dropped.
+    """
+
+    # type="tool" makes this a tool span named search_handbook, nested under
+    # the chain's trace; its input is the question and its output is the
+    # retrieved sections. Without it, you cannot tell a retrieval miss from a
+    # model that ignored good context.
+    @opik.track(name="search_handbook", type="tool")
+    def search_handbook(question: str) -> dict:
+        docs = retriever.invoke(question)
+        sections = [f"{d.metadata['source']} / {d.metadata['section']}" for d in docs]
+        # Span metadata is searchable in the UI: k and the section list sit
+        # next to the span instead of buried in the output text.
+        opik_context.update_current_span(metadata={"k": TOP_K, "sections": sections})
+        return {"sections": sections, "context": format_context(docs)}
+
+    return search_handbook
+
+
 def build_chain(retriever, llm=None):
-    """retriever | prompt | llm, one question string in, one answer string out."""
+    """question -> search_handbook -> prompt -> llm, one answer string out."""
     llm = llm or ChatOllama(
         model=CHAT_MODEL, base_url=OLLAMA_URL, temperature=0, num_predict=200
     )
     prompt = ChatPromptTemplate.from_messages(
         [("system", SYSTEM_PROMPT), ("human", "{question}")]
     )
+    # LangChain records every runnable as a span, so these names are what the
+    # trace tree shows around the tool span.
+    search = RunnableLambda(make_search(retriever), name="retrieve") | RunnableLambda(
+        operator.itemgetter("context"), name="pick_context"
+    )
     return (
-        {"context": retriever | format_context, "question": lambda q: q}
+        {"context": search, "question": RunnableLambda(lambda q: q, name="pass_question")}
         | prompt
         | llm
         | StrOutputParser()

@@ -41,7 +41,23 @@ def test_answer_has_fact_is_case_insensitive():
 
 
 def test_chain_runs_with_stubbed_retriever_and_llm():
-    retriever = RunnableLambda(lambda q: [Document(page_content="Mash at 63 C.")])
+    doc = Document(
+        page_content="Mash at 63 C.", metadata={"source": "mashing.md", "section": "Mash"}
+    )
+    retriever = RunnableLambda(lambda q: [doc])
     llm = FakeListChatModel(responses=["Mash at 63 C."])
     chain = rag.build_chain(retriever, llm=llm)
     assert chain.invoke("What mash temperature?") == "Mash at 63 C."
+
+
+def test_search_handbook_runs_untouched_with_tracking_disabled():
+    # make_search returns an @opik.track function; with tracking disabled it
+    # behaves like the plain function it wraps.
+    doc = Document(
+        page_content="Mash at 63 C.",
+        metadata={"source": "mashing.md", "section": "Mash temperature and body"},
+    )
+    search = rag.make_search(RunnableLambda(lambda q: [doc]))
+    result = search("What mash temperature?")
+    assert result["sections"] == ["mashing.md / Mash temperature and body"]
+    assert "63 C" in result["context"]
