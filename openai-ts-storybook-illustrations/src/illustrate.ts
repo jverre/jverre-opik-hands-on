@@ -3,7 +3,7 @@ import path from "node:path";
 import OpenAI from "openai";
 import type { Opik } from "opik";
 import { trackOpenAI } from "opik-openai";
-import { renderBrief } from "./briefs.js";
+import { BRIEF_NAME, renderBrief } from "./briefs.js";
 import { HERO, type StoryPage } from "./story.js";
 
 // Cheapest gpt-image-1-mini setting: one 1024x1024 image at low quality.
@@ -28,9 +28,10 @@ export async function illustratePage(opts: {
   page: StoryPage;
   version: string;
   template: string;
+  promptId?: string;
   outDir: string;
 }): Promise<Illustration> {
-  const { openai, opik, page, version, template, outDir } = opts;
+  const { openai, opik, page, version, template, promptId, outDir } = opts;
   const prompt = renderBrief(template, pageVars(page));
 
   // One trace per page illustration; the brief version is a tag and metadata
@@ -39,7 +40,15 @@ export async function illustratePage(opts: {
     name: "illustrate-page",
     input: { page: page.id, title: page.title, brief_version: version, prompt },
     tags: [version, page.id],
-    metadata: { brief_version: version, model: IMAGE_MODEL, size: IMAGE_SIZE },
+    // prompt_id links the trace to the library prompt; brief_version names which
+    // immutable version of it was sent.
+    metadata: {
+      prompt_name: BRIEF_NAME,
+      brief_version: version,
+      prompt_id: promptId,
+      model: IMAGE_MODEL,
+      size: IMAGE_SIZE,
+    },
   });
 
   // trackOpenAI wraps the client: images.generate becomes an llm child span of

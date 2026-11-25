@@ -2,6 +2,7 @@
 //   npm run demo                      illustrate every page with briefs v1 and v2
 //   tsx src/cli.ts run --briefs v2    only one brief version
 //   tsx src/cli.ts run --pages 1      only the first N pages
+//   tsx src/cli.ts check              read the project back from Opik and print counts
 //   tsx src/cli.ts show               print the rendered briefs, no API calls
 
 import process from "node:process";
@@ -9,6 +10,8 @@ import { parseArgs } from "node:util";
 import OpenAI from "openai";
 import { Opik } from "opik";
 import { BRIEF_TEMPLATES, renderBrief } from "./briefs.js";
+import { loadBriefs } from "./library.js";
+import { checkProject } from "./check.js";
 import { loadEnv } from "./env.js";
 import { illustratePage, pageVars } from "./illustrate.js";
 import { PAGES, STORY_TITLE } from "./story.js";
@@ -25,6 +28,7 @@ async function run(versions: string[], pageCount: number): Promise<void> {
   // The Opik client batches traces in the background; the host and workspace
   // come from OPIK_URL_OVERRIDE / OPIK_WORKSPACE.
   const opik = new Opik({ projectName: PROJECT });
+  const briefs = await loadBriefs(opik, PROJECT, versions);
   console.log(`Illustrating "${STORY_TITLE}"`);
   for (const version of versions) {
     for (const page of PAGES.slice(0, pageCount)) {
@@ -33,7 +37,8 @@ async function run(versions: string[], pageCount: number): Promise<void> {
         opik,
         page,
         version,
-        template: BRIEF_TEMPLATES[version],
+        template: briefs[version].template,
+        promptId: briefs[version].promptId,
         outDir: OUT_DIR,
       });
       console.log(`  ${version} ${page.id} -> ${done.file}`);
@@ -46,6 +51,9 @@ async function run(versions: string[], pageCount: number): Promise<void> {
 }
 
 function show(versions: string[], pageCount: number): void {
+  for (const v of versions) {
+    if (!BRIEF_TEMPLATES[v]) throw new Error(`show only knows the seed briefs (${Object.keys(BRIEF_TEMPLATES).join(", ")})`);
+  }
   for (const version of versions) {
     for (const page of PAGES.slice(0, pageCount)) {
       console.log(`[${version}] ${page.id}\n${renderBrief(BRIEF_TEMPLATES[version], pageVars(page))}\n`);
@@ -63,14 +71,12 @@ async function main(): Promise<void> {
     },
   });
   const versions = values.briefs!.split(",").map((v) => v.trim());
-  for (const v of versions) {
-    if (!BRIEF_TEMPLATES[v]) throw new Error(`Unknown brief version "${v}"`);
-  }
   const pageCount = Math.min(Number(values.pages), PAGES.length);
   const command = positionals[0] ?? "run";
   if (command === "run") await run(versions, pageCount);
+  else if (command === "check") await checkProject(PROJECT);
   else if (command === "show") show(versions, pageCount);
-  else throw new Error(`Unknown command "${command}" (use run or show)`);
+  else throw new Error(`Unknown command "${command}" (use run, show or check)`);
 }
 
 main().catch((error) => {
