@@ -1,0 +1,42 @@
+{
+  "name": "vercel-ai-bike-repair-chat",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Streaming bike-repair workshop assistant on the Vercel AI SDK and Next.js, traced with Opik",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "demo": "tsx scripts/demo.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "verify": "tsx scripts/verify.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^4.0.83",
+    "@ai-sdk/otel": "^1.0.127",
+    "@ai-sdk/react": "^4.0.130",
+    "@opentelemetry/api": "1.9.1",
+    "@opentelemetry/api-logs": "^0.222.0",
+    "@opentelemetry/core": "2.11.0",
+    "@opentelemetry/instrumentation": "^0.222.0",
+    "@opentelemetry/sdk-logs": "^0.222.0",
+    "@opentelemetry/sdk-node": "0.222.0",
+    "@vercel/otel": "^2.1.3",
+    "ai": "^7.0.127",
+    "dotenv": "^18.0.5",
+    "next": "^16.3.8",
+    "opik": "1.11.14",
+    "opik-vercel": "2.2.89",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.6.0",
+    "tsx": "^4.19.0",
+    "vitest": "^3.2.0"
+  }
+}
