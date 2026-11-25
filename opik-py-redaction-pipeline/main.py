@@ -18,14 +18,16 @@ def main() -> None:
     client = OpenAI()
     # The low-level client: no decorators, no wrappers. Every trace and span below is an
     # explicit call. The project name decides which Opik project the traces land in.
-    opik_client = opik.Opik(project_name=os.getenv("OPIK_PROJECT_NAME", "opik-py-redaction-pipeline"))
+    project = os.getenv("OPIK_PROJECT_NAME", "opik-py-redaction-pipeline")
+    opik_client = opik.Opik(project_name=project)
     for doc in docs:
         result = process_document(client, opik_client, doc)
         print(f"\n== {doc['id']}  entities={len(result['entities'])}  leak_free={result['leak_free']}"
               f"  recall={result['recall']}  precision={result['precision']}")
         print(result["redacted"])
-    # flush() blocks until the background batch is uploaded; without it a short-lived
-    # script exits first and the traces never arrive.
+    print(f"\nTraces sent to Opik project '{project}'.")
+    # flush() blocks until the background batch is uploaded. A normal exit also flushes via
+    # an atexit hook, but a crash, os._exit or a worker that gets killed skips that hook.
     opik_client.flush()
 
 
