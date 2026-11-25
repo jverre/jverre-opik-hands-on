@@ -23,7 +23,7 @@ SUMMARY_SYSTEM = (
 async def check_eligibility(app_id: str) -> dict:
     app = get_application(app_id)
     user = f"RULES:\n{load_rules()}\nAPPLICATION:\n{json.dumps(app, indent=2)}"
-    result, _ = await llm.chat_json(ELIGIBILITY_SYSTEM, user)
+    result, _ = await llm.chat_json("eligibility-check", ELIGIBILITY_SYSTEM, user)
     return {"eligible": bool(result.get("eligible")), "reasons": result.get("reasons", [])}
 
 
@@ -42,5 +42,5 @@ async def write_reviewer_summary(app_id: str, eligibility: dict, budget: dict) -
     user = json.dumps(
         {"application": app, "eligibility": eligibility, "budget": budget}, indent=2
     )
-    text, _ = await llm.chat_text(SUMMARY_SYSTEM, user)
+    text, _ = await llm.chat_text("reviewer-summary", SUMMARY_SYSTEM, user)
     return text
