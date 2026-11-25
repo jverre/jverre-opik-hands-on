@@ -19,6 +19,7 @@ from langchain_openai import ChatOpenAI  # noqa: E402
 from opik.integrations.langchain import OpikTracer  # noqa: E402
 
 from guide.corpus import load_chunks  # noqa: E402
+from guide.evaluation import run_experiment, summarize  # noqa: E402
 from guide.graph import build_graph  # noqa: E402
 from guide.retrieval import build_store  # noqa: E402
 
@@ -32,12 +33,22 @@ QUESTIONS = [
 
 def main() -> None:
     store = build_store(load_chunks())
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     # One tracer for the run; it logs into PROJECT_NAME.
     tracer = OpikTracer(project_name=PROJECT_NAME)
-    app = build_graph(store, ChatOpenAI(model="gpt-4o-mini", temperature=0), tracer=tracer)
+
+    # 1. Tracing demo: a few questions through the default graph (k=4).
+    app = build_graph(store, llm, tracer=tracer)
     for question in QUESTIONS:
         result = app.invoke({"question": question})
         print(f"Q: {question}\nA: {result['answer']}\n")
+
+    # 2. Two experiments over the same dataset: the default k=4 and a starved k=1.
+    # Opik lists them side by side so the per-question score changes are visible.
+    for k, name in [(4, "k4-baseline"), (1, "k1-starved")]:
+        evaluation = run_experiment(build_graph(store, llm, k=k, tracer=tracer), name, k)
+        scores = ", ".join(f"{n}={v:.2f}" for n, v in summarize(evaluation).items())
+        print(f"{name}: {scores}\n  {evaluation.experiment_url}")
 
     # Traces are sent from a background thread; flush so none are lost at exit.
     opik.flush_tracker()
