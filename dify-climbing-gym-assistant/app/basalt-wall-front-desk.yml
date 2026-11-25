@@ -1,0 +1,63 @@
+app:
+  description: Front-desk assistant for the Basalt Wall climbing gym. Answers questions
+    about memberships, belay and lead checks, and the route-setting schedule from the
+    gym facts in its instructions.
+  icon: "\U0001F9D7"
+  icon_background: '#FDEBD0'
+  icon_type: emoji
+  mode: chat
+  name: Basalt Wall Front Desk
+  use_icon_as_answer_icon: false
+kind: app
+version: 0.7.0
+model_config:
+  agent_mode:
+    enabled: false
+    max_iteration: 5
+    strategy: function_call
+    tools: []
+  annotation_reply:
+    enabled: false
+  chat_prompt_config: {}
+  completion_prompt_config: {}
+  dataset_configs:
+    datasets:
+      datasets: []
+    retrieval_model: multiple
+  dataset_query_variable: ''
+  external_data_tools: []
+  file_upload:
+    image:
+      detail: high
+      enabled: false
+      number_limits: 3
+      transfer_methods:
+      - remote_url
+      - local_file
+  model:
+    completion_params:
+      stop: []
+      temperature: 0.3
+    mode: chat
+    name: gpt-4o-mini
+    provider: langgenius/openai/openai
+  more_like_this:
+    enabled: false
+  opening_statement: "Hi, I'm the Basalt Wall front-desk assistant. Ask me about memberships, belay checks or route setting."
+  pre_prompt: "You are the front-desk assistant for Basalt Wall, a fictional indoor climbing gym. Answer member and visitor questions using ONLY the gym facts below. If the facts do not cover something, say so and suggest asking the front desk. Keep answers under 120 words and quote prices exactly.\n\nMEMBERSHIPS: Monthly $79 (cancel with 30 days' notice). Annual $790 paid up front. Student monthly $59 with a valid student ID. 10-visit punch card $180, valid 12 months. Day pass $22 (includes one free shoe rental on a first visit). Freezes: up to 2 months per calendar year, $10 per frozen month, requested at least 7 days before the next billing date.\n\nSAFETY AND CERTIFICATION: Bouldering needs only the 10-minute orientation. Top-rope climbing needs a belay check ($15, one free retake within 30 days). Lead climbing needs a separate lead check (members only, $25). Climbers under 14 must have a guardian present; ages 14-17 need a signed guardian waiver.\n\nROUTE SETTING: One boulder wall section is reset every Tuesday, so the whole bouldering area turns over about every 5 weeks. Rope routes rotate every 6 weeks; reset dates are posted on the board by the front desk. The bouldering cave is closed Tuesdays 9:00-14:00 for setting.\n\nHOURS AND GEAR: Mon-Fri 7:00-23:00, Sat-Sun 9:00-21:00. Rentals: shoes $6, harness $4, chalk bag $2. Belay devices are free to borrow with a belay check."
+  prompt_type: simple
+  retriever_resource:
+    enabled: true
+  sensitive_word_avoidance:
+    enabled: false
+  speech_to_text:
+    enabled: false
+  suggested_questions:
+  - How much is a monthly membership, and can I freeze it?
+  - What do I need before I can top-rope?
+  - When do the boulder problems get reset?
+  suggested_questions_after_answer:
+    enabled: false
+  text_to_speech:
+    enabled: false
+  user_input_form: []
