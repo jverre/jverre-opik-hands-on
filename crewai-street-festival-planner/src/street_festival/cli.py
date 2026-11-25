@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 from street_festival.crew import build_crew
 from street_festival.data import build_inputs
+from street_festival.tracing import enable_tracing, flush
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -23,6 +24,11 @@ def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
 
     if args.command == "plan":
-        result = build_crew(verbose=args.verbose).kickoff(inputs=build_inputs())
+        crew = build_crew(verbose=args.verbose)
+        enable_tracing(crew)
+        try:
+            result = crew.kickoff(inputs=build_inputs())
+        finally:
+            flush()
         print("\n=== FESTIVAL BUDGET ===\n")
         print(result)
