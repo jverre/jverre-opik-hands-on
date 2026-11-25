@@ -1,4 +1,4 @@
-"""Command line entry point: `festival plan`."""
+"""Command line entry point: `festival plan` and `festival costs`."""
 
 import argparse
 from pathlib import Path
@@ -21,6 +21,7 @@ def main(argv: list[str] | None = None) -> None:
     sub = parser.add_subparsers(dest="command", required=True)
     plan = sub.add_parser("plan", help="run the three-agent crew once")
     plan.add_argument("--verbose", action="store_true", help="show the crew's reasoning")
+    sub.add_parser("costs", help="print tokens and dollar cost per agent for the latest trace")
     args = parser.parse_args(argv)
 
     if args.command == "plan":
@@ -32,3 +33,8 @@ def main(argv: list[str] | None = None) -> None:
             flush()
         print("\n=== FESTIVAL BUDGET ===\n")
         print(result)
+
+    if args.command == "costs":
+        from street_festival.costs import latest_trace_report
+
+        print(latest_trace_report())
