@@ -4,19 +4,30 @@ Four generated PDFs (one per fictional trail) are split into one chunk per
 section, embedded with OpenAI, and queried with gpt-4o-mini.
 """
 
+import os
 import pathlib
 import re
+
+# Opik reads the project name from this variable when the first trace is
+# created; without it traces would land in the "Default Project".
+PROJECT_NAME = "llamaindex-trail-guide-qa"
+os.environ["OPIK_PROJECT_NAME"] = PROJECT_NAME
 
 import dotenv
 
 # Secrets live in the repo-root .env (OPENAI_API_KEY and friends).
 dotenv.load_dotenv(pathlib.Path(__file__).parents[1] / ".env")
 
-from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex
+import opik
+from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, set_global_handler
 from llama_index.core.schema import TextNode
 from llama_index.llms.openai import OpenAI
 
 import trails
+
+# One line turns on Opik's LlamaIndex callback: every query becomes a trace with
+# retrieve (embedding) and synthesize (templating, llm) spans underneath it.
+set_global_handler("opik")
 
 Settings.llm = OpenAI(model="gpt-4o-mini", temperature=0.0)
 
@@ -76,6 +87,9 @@ def main() -> None:
         response = query_engine.query(f"{SYSTEM_HINT}\n\nQuestion: {question}")
         print(f"Q: {question}")
         print(f"A: {response}\n")
+
+    # Traces are sent from a background thread; flush so none are lost on exit.
+    opik.flush_tracker()
 
 
 if __name__ == "__main__":
