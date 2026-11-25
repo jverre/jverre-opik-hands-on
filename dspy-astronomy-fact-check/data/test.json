@@ -1,18 +1,50 @@
 [
-  {"claim": "Comet Brannigan-Oye comes back every 61 years.", "label": "SUPPORTED", "cites": "F06",
-   "assertion": "The verdict is SUPPORTED because the comet returns every 61 years"},
-  {"claim": "The primary mirror is re-coated with silver.", "label": "REFUTED", "cites": "F08",
-   "assertion": "The verdict is REFUTED because the mirror is re-coated with aluminum, not silver"},
-  {"claim": "Tessaly-b takes 7.4 days to orbit its star.", "label": "SUPPORTED", "cites": "F07",
-   "assertion": "The verdict is SUPPORTED because the orbit takes 7.4 days"},
-  {"claim": "The observatory employs 40 astronomers.", "label": "REFUTED", "cites": "F10",
-   "assertion": "The verdict is REFUTED because the staff has 23 astronomers"},
-  {"claim": "Heliodor was built by a Danish engineering firm.", "label": "NOT ENOUGH INFO", "cites": "none",
-   "assertion": "The verdict is NOT ENOUGH INFO because no fact names who built the telescope"},
-  {"claim": "The dome stands at 3,200 meters above sea level.", "label": "SUPPORTED", "cites": "F03",
-   "assertion": "The verdict is SUPPORTED because the dome stands at 3,200 meters"},
-  {"claim": "The survey camera produces 2,048 by 2,048 pixel frames.", "label": "REFUTED", "cites": "F05",
-   "assertion": "The verdict is REFUTED because frames are 4,096 by 4,096 pixels"},
-  {"claim": "Comet Brannigan-Oye was discovered by an amateur astronomer.", "label": "NOT ENOUGH INFO", "cites": "none",
-   "assertion": "The verdict is NOT ENOUGH INFO because no fact says who discovered the comet"}
+  {
+    "claim": "Comet Brannigan-Oye comes back every 61 years.",
+    "label": "SUPPORTED",
+    "cites": "F06",
+    "why": "the comet returns every 61 years"
+  },
+  {
+    "claim": "The primary mirror is re-coated with silver.",
+    "label": "REFUTED",
+    "cites": "F08",
+    "why": "the mirror is re-coated with aluminum, not silver"
+  },
+  {
+    "claim": "Tessaly-b takes 7.4 days to orbit its star.",
+    "label": "SUPPORTED",
+    "cites": "F07",
+    "why": "the orbit takes 7.4 days"
+  },
+  {
+    "claim": "The observatory employs 40 astronomers.",
+    "label": "REFUTED",
+    "cites": "F10",
+    "why": "the staff has 23 astronomers"
+  },
+  {
+    "claim": "Heliodor was built by a Danish engineering firm.",
+    "label": "NOT ENOUGH INFO",
+    "cites": "none",
+    "why": "no fact names who built the telescope"
+  },
+  {
+    "claim": "The dome stands at 3,200 meters above sea level.",
+    "label": "SUPPORTED",
+    "cites": "F03",
+    "why": "the dome stands at 3,200 meters"
+  },
+  {
+    "claim": "The survey camera produces 2,048 by 2,048 pixel frames.",
+    "label": "REFUTED",
+    "cites": "F05",
+    "why": "frames are 4,096 by 4,096 pixels"
+  },
+  {
+    "claim": "Comet Brannigan-Oye was discovered by an amateur astronomer.",
+    "label": "NOT ENOUGH INFO",
+    "cites": "none",
+    "why": "no fact says who discovered the comet"
+  }
 ]

@@ -100,3 +100,16 @@ def compile_program(program: dspy.Module) -> dspy.Module:
         max_labeled_demos=5, max_rounds=1,
     )
     return optimizer.compile(program, trainset=load_trainset())
+
+
+def make_task(program: dspy.Module):
+    """Wrap a program as the `task` callable that opik.run_tests expects."""
+
+    # @opik.track opens a "general" span for the task; the DSPy callback's
+    # spans nest under it, so each suite item reads as one tidy trace tree.
+    @opik.track(name="check_claim", type="general")
+    def task(item: dict) -> dict:
+        prediction = program(facts=FACT_SHEET, claim=item["claim"])
+        return {"input": {"claim": item["claim"]}, "output": prediction.verdict}
+
+    return task
