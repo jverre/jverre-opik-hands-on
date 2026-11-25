@@ -1,0 +1,15 @@
+[project]
+name = "optimizer-recipe-cuisine-classifier"
+version = "0.1.0"
+description = "A loose recipe-cuisine classifier prompt scored on a small labeled dataset"
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=1.60",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.uv]
+package = false
