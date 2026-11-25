@@ -12,8 +12,14 @@ import re
 
 import dotenv
 import dspy
+import opik
+from opik.integrations.dspy.callback import OpikCallback
 
 HERE = pathlib.Path(__file__).parent
+PROJECT_NAME = "dspy-astronomy-fact-check"
+# Opik reads its default project from this variable: every trace and span
+# from this app lands in the "dspy-astronomy-fact-check" project.
+os.environ["OPIK_PROJECT_NAME"] = PROJECT_NAME
 MODEL = "openai/gpt-4o-mini"
 LABELS = ("SUPPORTED", "REFUTED", "NOT ENOUGH INFO")
 
@@ -76,7 +82,14 @@ def load_testset() -> list[dict]:
 
 def configure_lm() -> dspy.LM:
     lm = dspy.LM(MODEL, cache=False)
-    dspy.configure(lm=lm)
+    # OpikCallback turns every DSPy module call into a trace: the
+    # ChainOfThought/Predict spans nest over an llm span that carries the
+    # full prompt (demos included), token usage and cost. Without it the
+    # project stays empty.
+    dspy.configure(
+        lm=lm,
+        callbacks=[OpikCallback(project_name=PROJECT_NAME, log_graph=True)],
+    )
     return lm
 
 
