@@ -1,0 +1,24 @@
+{
+  "name": "opik-ts-podcast-title-prompts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Episode title and blurb prompt for a fictional indie podcast network, versioned in the Opik prompt library and tested per version.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "demo": "tsx src/demo.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "openai": "6.49.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.6",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}
