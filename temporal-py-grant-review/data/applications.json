@@ -1,0 +1,41 @@
+[
+  {
+    "id": "GR-101",
+    "applicant": "Willowbrook Seed Library",
+    "county": "Marlow County",
+    "category": "education",
+    "requested_amount": 3200,
+    "summary": "Run twelve free Saturday workshops teaching families to save and swap vegetable seeds at the Willowbrook branch library.",
+    "budget": [
+      {"item": "Workshop materials", "cost": 1100},
+      {"item": "Facilitator stipends", "cost": 1800},
+      {"item": "Printed seed guides", "cost": 300}
+    ]
+  },
+  {
+    "id": "GR-102",
+    "applicant": "Northgate Riverside Cleanup Crew",
+    "county": "Marlow County",
+    "category": "environment",
+    "requested_amount": 4800,
+    "summary": "Monthly volunteer cleanups along the Northgate stretch of the Pell River, with gloves, bags and a disposal truck rental.",
+    "budget": [
+      {"item": "Gloves and bags", "cost": 900},
+      {"item": "Truck rental", "cost": 2400},
+      {"item": "Volunteer lunches", "cost": 1000}
+    ]
+  },
+  {
+    "id": "GR-103",
+    "applicant": "Brightfield Youth Robotics Club",
+    "county": "Halden County",
+    "category": "education",
+    "requested_amount": 9500,
+    "summary": "Buy a competition-grade robotics kit and travel to a regional tournament for the Brightfield Youth Robotics Club.",
+    "budget": [
+      {"item": "Robotics kit", "cost": 5200},
+      {"item": "Tournament travel", "cost": 3100},
+      {"item": "Team shirts", "cost": 600}
+    ]
+  }
+]
