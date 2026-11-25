@@ -17,7 +17,9 @@
     "@langchain/core": "^1.1.0",
     "@langchain/openai": "^1.2.0",
     "dotenv": "^17.2.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "opik": "2.3.2",
+    "opik-langchain": "2.3.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
@@ -25,5 +27,10 @@
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vitest": "^3.2.7"
+  },
+  "overrides": {
+    "opik-langchain": {
+      "opik": "$opik"
+    }
   }
 }

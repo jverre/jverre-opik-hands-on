@@ -66,6 +66,21 @@ export function buildChain({ llm, corpus, sessions }: ChainDeps) {
   return RunnableSequence.from([loadContext, prompt, llm, new StringOutputParser()]);
 }
 
+/**
+ * The same chain behind an object-shaped root: `{ question }` in, `{ answer }`
+ * out. Real apps often grow into this shape; it is here so the demo can show
+ * how it reads in Opik's Threads view next to the string-in/string-out chain.
+ */
+export function buildObjectRootChain(deps: ChainDeps) {
+  return RunnableSequence.from([
+    RunnableLambda.from((input: { question: string }) => input.question).withConfig({
+      runName: "unwrap-question",
+    }),
+    buildChain(deps),
+    RunnableLambda.from((answer: string) => ({ answer })).withConfig({ runName: "wrap-answer" }),
+  ]);
+}
+
 /** Remember one exchange so the next turn can refer back to it. */
 export function remember(session: Session, question: string, answer: string): void {
   session.history.push(new HumanMessage(question), new AIMessage(answer));
