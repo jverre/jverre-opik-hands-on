@@ -21,11 +21,6 @@ export const ASSERTIONS = [
 /** Judges are noisy, so each episode is run 3 times and must pass at least 2 of them. */
 export const EXECUTION_POLICY = { runsPerItem: 3, passThreshold: 2 };
 
-/** Render the copy the way the judge reads it. */
-export function formatCopy(copy: EpisodeCopy): string {
-  return `Title: ${copy.title}\nBlurb: ${copy.blurb}`;
-}
-
 /** Pull the episode back out of a suite item (the item also carries its id). */
 export function episodeFromItem(item: Record<string, unknown>): Episode {
   const { show, guest, notes } = item;
@@ -76,7 +71,9 @@ export async function runSuiteForVersion(
     taskThreads: 5,
     task: async (item) => {
       const episode = episodeFromItem(item);
-      return { input: episode, output: formatCopy(await write(episode)) };
+      // Structured output: with a plain "Title: ..." string the judge counted the
+      // label's own colon against the "no colon" rule.
+      return { input: episode, output: await write(episode) };
     },
   });
 }

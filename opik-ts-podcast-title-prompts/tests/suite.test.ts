@@ -1,12 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { EPISODES } from "../src/episodes.js";
-import { EXECUTION_POLICY, episodeFromItem, formatCopy } from "../src/suite.js";
+import { EXECUTION_POLICY, episodeFromItem } from "../src/suite.js";
 
 describe("suite helpers", () => {
-  it("formats copy the way the judge reads it", () => {
-    expect(formatCopy({ title: "T", blurb: "B." })).toBe("Title: T\nBlurb: B.");
-  });
-
   it("rebuilds an episode from a suite item that also carries an id", () => {
     const episode = EPISODES[1]!;
     expect(episodeFromItem({ id: "abc", ...episode })).toEqual(episode);

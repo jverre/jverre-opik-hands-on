@@ -19,22 +19,23 @@ const CHANGES: Record<string, string> = {
 
 /**
  * Make sure the prompt library holds v1 and v2 of "episode-title-blurb".
- * createPrompt compares against the latest version only, so calling it again
- * with v1's text after v2 exists would add a v3 that is a copy of v1. Checking
- * for the version first keeps re-runs from piling up duplicates.
+ * Checking for each version first keeps re-runs from piling up duplicates: the
+ * SDK compares against the latest version only, so re-sending v1's text after
+ * v2 exists would add a v3 that is a copy of v1.
  */
 export async function registerPromptVersions(): Promise<void> {
   const opik = getOpik();
   for (const [version, text] of [["v1", PROMPT_V1], ["v2", PROMPT_V2]] as const) {
     const existing = await opik.getPrompt({ name: PROMPT_NAME, version, projectName: PROJECT_NAME });
     if (existing) continue;
-    // createPrompt writes a new immutable version (v1, v2, ...) into the Prompt
-    // library tab, with this change description shown in the version history.
-    await opik.createPrompt({
+    // createPromptVersion writes a new immutable version (v1, v2, ...) into the Prompt
+    // library tab, and its changeDescription shows in the version history. The
+    // higher-level createPrompt accepts changeDescription too but drops it in
+    // opik 2.3.2, which leaves the history without a reason for each change.
+    await opik.api.prompts.createPromptVersion({
       name: PROMPT_NAME,
-      prompt: text,
       projectName: PROJECT_NAME,
-      changeDescription: CHANGES[version],
+      version: { template: text, changeDescription: CHANGES[version] },
     });
   }
 }

@@ -44,8 +44,10 @@ export function tracedCopywriter(
   const opik = getOpik();
   // track() opens a trace (root span) around the function: input is the episode,
   // output is the parsed copy, and anything traced inside becomes a child span.
+  // type is set explicitly: without it the TS SDK files the root as an "llm" span
+  // with no model or tokens, which muddies the Models and cost columns.
   // Inside a test-suite run it becomes a span under that run's evaluation_task trace.
-  return track({ name: "write-episode-copy", projectName: PROJECT_NAME }, async (episode: Episode) => {
+  return track({ name: "write-episode-copy", projectName: PROJECT_NAME, type: "general" }, async (episode: Episode) => {
     const prompt = await loadPrompt();
     const context = getTrackContext();
     // Metadata on the trace is what you filter by in the traces table to compare versions.

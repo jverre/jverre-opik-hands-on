@@ -59,6 +59,32 @@ Offline tests (no keys, no Opik): `npm test`. `vitest.config.ts` sets `OPIK_TRAC
 - Raise `runsPerItem` in `src/suite.ts` to 5 (and `passThreshold` to 3). How much does the pass rate wobble between runs?
 - Add a sixth episode to `src/episodes.ts` with a guest whose name is long. Does the 8-word limit still hold?
 
+## Gotchas we hit
+
+**`npm install` stops with `ERESOLVE unable to resolve dependency tree`.** `opik-openai` declares a peer dependency on an older `opik` than the one you installed. Tell npm to use your copy:
+
+```json
+"overrides": { "opik-openai": { "opik": "$opik" } }
+```
+
+**The prompt's version history has no change descriptions.** `client.createPrompt({ ..., changeDescription })` accepts the field but opik 2.3.2 does not store it, so each version shows a blank reason. Call the REST client instead, which keeps it:
+
+```ts
+await opik.api.prompts.createPromptVersion({
+  name, projectName, version: { template, changeDescription },
+});
+```
+
+**The judge fails "no colon in the title" on titles that have none.** The task returned `"Title: ...\nBlurb: ..."` as one string, and the judge counted the label's own colon. v2 scored 4 runs short of 15 on that assertion until the task returned the structured copy (`{ title, blurb }`), which the judge reads without labels.
+
+**Each completion shows up as its own top-level trace.** `trackOpenAI` creates a new trace per call unless you give it a parent; unlike `track()` it does not look at the active context. Inside a `track()` function pass the current span:
+
+```ts
+trackOpenAI(rawClient, { client: opik, parent: getTrackContext()?.span });
+```
+
+**The `track()` root span is typed `llm` but has no model or tokens.** The TS SDK files it that way by default, so it appears in model and cost views as an empty call. Set the type yourself: `track({ name: "write-episode-copy", type: "general" }, fn)`. (Spans made by `trackOpenAI` are `general` too in 2.3.2; they still carry the model, usage and cost.)
+
 ## How it's put together
 
 - `src/episodes.ts` - the five fictional episodes.
