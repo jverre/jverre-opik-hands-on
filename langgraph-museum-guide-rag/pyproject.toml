@@ -1,0 +1,18 @@
+[project]
+name = "langgraph-museum-guide-rag"
+version = "0.1.0"
+description = "Two-node LangGraph RAG over a fictional museum guide"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain-core>=0.3",
+    "langchain-openai>=0.3",
+    "langgraph>=0.4",
+    "numpy>=2.0",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
