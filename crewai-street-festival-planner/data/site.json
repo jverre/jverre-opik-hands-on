@@ -1,0 +1,19 @@
+{
+  "festival": "Marigold Lane Street Festival",
+  "date": "Saturday 13 June, 11:00-21:00",
+  "expected_attendance": 1800,
+  "budget_cap_usd": 14000,
+  "closed_streets": ["Marigold Lane (Alder St to Fenwick St)", "Tanner Court (full length)"],
+  "zones": [
+    {"name": "Main stage", "location": "Marigold Lane at Fenwick St", "capacity": 600, "power_amps": 100},
+    {"name": "Food row", "location": "Marigold Lane between Linden Ave and Alder St", "capacity": 450, "power_amps": 200},
+    {"name": "Makers market", "location": "Tanner Court", "capacity": 300, "power_amps": 40},
+    {"name": "Kids corner", "location": "Linden Ave pocket park", "capacity": 150, "power_amps": 20}
+  ],
+  "constraints": [
+    "Fire lane of 4 metres must stay clear along the whole closure.",
+    "Amplified music must end by 20:30 (noise permit).",
+    "Bakery on Alder St needs delivery access until 09:00.",
+    "No vendor may draw more power than its zone has spare."
+  ]
+}
