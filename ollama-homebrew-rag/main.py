@@ -16,26 +16,32 @@ import opik  # noqa: E402
 from opik.integrations.langchain import OpikTracer  # noqa: E402
 
 import rag  # noqa: E402
-
-QUESTIONS = [
-    "What temperature should I mash at for a dry, crisp saison?",
-    "How should I add hops for a hazy IPA whirlpool?",
-    "My fermentation is stuck at 1.030. What should I do first?",
-    "How long does the sanitizer need to touch a surface?",
-]
+from checks import CASES, answer_has_fact  # noqa: E402
 
 
 def main() -> None:
     chain = rag.build_chain(rag.build_retriever())
-    # OpikTracer is a LangChain callback: each chain.invoke becomes one trace
-    # (named ask_the_handbook) with a child span per runnable and the local
-    # model name on the ChatOllama span. No cloud LLM is involved; only the
-    # trace goes to Opik.
-    tracer = OpikTracer(project_name=PROJECT_NAME, tags=["ollama", "local"])
-    for question in QUESTIONS:
-        answer = chain.invoke(question, config={"callbacks": [tracer]})
-        print(f"Q: {question}\nA: {answer}\n")
-    # Traces are sent from a background thread; flush so none are lost at exit.
+    client = opik.Opik(project_name=PROJECT_NAME)
+    for case in CASES:
+        # OpikTracer is a LangChain callback: each chain.invoke becomes one trace
+        # (named ask_the_handbook) with a child span per runnable, and an llm
+        # span for the local ChatOllama call. No cloud LLM is involved; only
+        # the trace goes to Opik.
+        tracer = OpikTracer(project_name=PROJECT_NAME, tags=["ollama", "local"])
+        answer = chain.invoke(case.question, config={"callbacks": [tracer]})
+        score = answer_has_fact(answer, case.expected_fact)
+
+        # A feedback score on the trace shows up as a column in the traces
+        # table, so you can sort for the answers that missed the fact.
+        trace_id = tracer.created_traces()[0].id
+        client.log_traces_feedback_scores(
+            [{"id": trace_id, "name": "answer_has_fact", "value": score,
+              "reason": f"looked for {case.expected_fact!r}"}],
+            project_name=PROJECT_NAME,
+        )
+        print(f"Q: {case.question}\nA: {answer}\n[answer_has_fact={score}]\n")
+    # Traces and scores are sent from a background thread; flush so none are
+    # lost when the script exits.
     opik.flush_tracker()
 
 
